@@ -1,0 +1,65 @@
+html, body {
+  background-color: #363333;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between; /* Adjust this as needed */
+    align-items: center; /* Centers items vertically */
+    height: 100px; /* Thickness of the navbar */
+    background-color: #363333; /* Black background */
+    color: #fff; /* White text color */
+    padding: 0 20px; /* Padding on the sides */
+
+    border-bottom: 1px solid white;
+}
+
+/* Style for the navbar items/links */
+.navButtons {
+  display: inline-block;
+  padding: 10px 30px;
+  margin: 10px;
+  background-color: rgb(103, 184, 216);
+  color: #fff; /* White text color for links */
+  text-decoration: none; /* Removes underline from links */
+  text-align: center;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.interactButtons {
+  position: absolute;
+  background-color: rgb(103, 184, 216);
+  color: #fff; /* White text color for links */
+  text-decoration: none; /* Removes underline from links */
+  text-align: center;
+  border-radius: 60px;
+  font-weight: bold;
+  top: 55%;
+  left: 8%;
+  padding: 20px 42px;
+  font-size: x-large;
+}
+
+/* Additional styling for hover effect on links */
+.navButtons:hover {
+  color: #ddd; /* Light grey color on hover */
+}
+.interactButtons:hover{
+  color: #ddd;
+}
+
+.homepageText {
+  color: white;
+  font-weight: 600;
+  position: fixed;
+  top: 25%;
+  left: 8%;
+  font-size: 100px;
+}
+
+
+
