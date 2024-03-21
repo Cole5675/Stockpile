@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <title>My Collection</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head> 
+<body>
+  <div class="container">
+    <div class="form-row">
+      <div class="col-md-3">
+        <label>Name <span class="errdiv"> *</span></label>
+        <input id="txtName" type="text" class="form-control txt txtName" placeholder="Enter Name" required>
+        <input id="txtId" type="hidden" class="form-control txt">
+      </div>
+      <div class="col-md-3 col-sm-6 col-6">
+        <label>Price <span class="errdiv"> *</span></label>
+        <input id="txtPrice" data-type="number" type="text" minlength="10" maxlength="10"
+          class="form-control txt txtPrice" placeholder="Price" required>
+      </div>
+      <div class="col-md-3 col-sm-6 col-6">
+        <label>Date</label>
+        <input id="txtDate" type="text" class="form-control txt txtDate" minlength="10" maxlength="10"
+          placeholder="Date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-6 col-sm-7">
+        <label>Additional Information<span class="errdiv"> *</span></label>
+        <textarea id="txtEtc" class="form-control txt txtAEtc" rows="3" minlength="15"
+          placeholder="Enter additional information here such as artist, location acquired, etc..." required></textarea>
+      </div>
+    </div>
+    <div class="row pt-2">
+      <div class="col-md-2">
+        <button type="button" class="btn btn-success" id="btnSave">Save</button>
+      </div>
+      <div class="col-md-2">
+        <button type="button" class="btn btn-secondary" id="btnClear">Clear</button>
+      </div>
+    </div>
+    <div class="row pt-3">
+      <div class="col-md-12 col-sm-12 col-12 p-2 ">
+        <table id="tblData" class="table table-bordered table-hover table-striped">
+          <thead>
+            <tr>
+              <th>Item Number</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Date</th>
+              <th>Additional Info</th>
+              <th class="text-center">Settings</th>
+            </tr>
+          </thead>
+          <tbody> 
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    var emptyRow = "<tr><td colspan='6' class='text-center'> No Records Available</td></tr>";
+    $(document).ready(function () {
+      loadDataFromLocal();
+      $('#tblData').on('click', '.btn-edit', function () {
+        debugger;
+        const name = $(this).parent().parent().find(".txtName").html();
+        const price = $(this).parent().parent().find(".txtPrice").html();
+        const date = $(this).parent().parent().find(".txtDate").html();
+        const etc = $(this).parent().parent().find(".txtEtc").html();
+        const id = $(this).parent().parent().find(".txtName").attr("data-id");
+        $("#txtName").val(name);
+        $("#txtPrice").val(price);
+        $("#txtDate").val(date);
+        $("#txtEtc").val(etc);
+        $("#txtId").val(id);
+        $("#btnSave").text("Update");
+      });
+
+      $('#tblData').on('click', '.btn-delete', function () {
+        debugger;
+        const id = $(this).parent().parent().find(".txtName").attr("data-id");
+        if(confirm("Are you sure you want to delete this entry?")){
+            deleteDataFromLocal(id);
+        }
+        
+      });
+
+      $("#btnSave").click(function () {
+        debugger;
+        if ($("#txtId").val() == '') {
+          addDataToLocal();
+        } else {
+          updateDataFromLocal();
+        }
+      });
+
+      $("#btnClear").click(function () {
+        debugger;
+        clearForm();
+      });
+    });
+
+    function clearForm() {
+      debugger;
+      $("#txtName").val("");
+      $("#txtPrice").val("");
+      $("#txtDate").val("");
+      $("#txtEtc").val("");
+      $("#btnSave").text("Add");
+    }
+
+    function addEmptyRow() {
+      debugger;
+      if ($("#tblData tbody").children().children().length == 0) {
+        $("#tblData tbody").append(emptyRow);
+      }
+    }
+
+    function loadDataFromLocal() {
+      debugger;
+      let localData = localStorage.getItem('localData');
+      if (localData) {
+        $("#tblData tbody").html("");
+        let localArray = JSON.parse(localData);
+        let index = 1;
+        localArray.forEach(element => {
+          let dynamicTR = "<tr>";
+          dynamicTR = dynamicTR + "<td> " + index + "</td>";
+          dynamicTR = dynamicTR + "<td class='txtName'  data-id=" + element.id + ">" + element.name + "</td>";
+          dynamicTR = dynamicTR + "<td class='txtPrice'>" + element.price + "</td>";
+          dynamicTR = dynamicTR + "<td class='txtDate'>" + element.date + "</td>";
+          dynamicTR = dynamicTR + "<td class='txtEtc'>" + element.etc + "</td>";
+          dynamicTR = dynamicTR + "    <td class='tdAction text-center'>";
+          dynamicTR = dynamicTR + "        <button class='btn btn-sm btn-success btn-edit'> Edit</button>";
+          dynamicTR = dynamicTR + "        <button class='btn btn-sm btn-danger btn-delete'> Delete</button>";
+          dynamicTR = dynamicTR + "    </td>";
+          dynamicTR = dynamicTR + " </tr>";
+          $("#tblData tbody").append(dynamicTR);
+          index++;
+        });
+      }
+      addEmptyRow();
+    }
+
+    function addDataToLocal() {
+      debugger;
+      let localData = localStorage.getItem('localData');
+      if (localData) {
+        let localArray = JSON.parse(localData);
+        const obj = {
+          id: localArray.length + 1,
+          name: $("#txtName").val(),
+          price: $("#txtPrice").val(),
+          date: $("#txtDate").val(),
+          etc: $("#txtEtc").val()
+        };
+        localArray.push(obj);
+        localStorage.setItem('localData', JSON.stringify(localArray));
+        loadDataFromLocal();
+      } else {
+        const arryObj = [];
+        const obj = {
+          id: 1,
+          name: $("#txtName").val(),
+          price: $("#txtPrice").val(),
+          date: $("#txtDate").val(),
+          etc: $("#txtEtc").val()
+        };
+        arryObj.push(obj);
+        localStorage.setItem('localData', JSON.stringify(arryObj));
+        loadDataFromLocal();
+      }
+      clearForm();
+    }
+
+    function updateDataFromLocal() {
+      debugger;
+      let localData = localStorage.getItem('localData');
+      let localArray = JSON.parse(localData);
+      const oldRecord = localArray.find(m => m.id == $("#txtId").val());
+      oldRecord.name = $("#txtName").val();
+      oldRecord.price = $("#txtPrice").val();
+      oldRecord.date = $("#txtDate").val();
+      oldRecord.etc = $("#txtEtc").val();
+      localStorage.setItem('localData', JSON.stringify(localArray));
+      loadDataFromLocal();
+      clearForm();
+    }
+
+    function deleteDataFromLocal(id) {
+      debugger;
+      let localData = localStorage.getItem('localData');
+      let localArray = JSON.parse(localData);
+      let i = 0;
+      while (i < localArray.length) {
+        if (localArray[i].id === Number(id)) {
+          localArray.splice(i, 1);
+        } else {
+          ++i;
+        }
+      }
+      localStorage.setItem('localData', JSON.stringify(localArray));
+      loadDataFromLocal();
+    }
+
+  </script>
+</body>
+
+</html>
